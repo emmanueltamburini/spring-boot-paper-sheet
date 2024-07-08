@@ -1,4 +1,4 @@
-package com.example.papersheet.handlers;
+package com.example.papersheet.handler;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

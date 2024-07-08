@@ -1,6 +1,6 @@
 package com.example.papersheet.controller;
 
-import com.example.papersheet.handlers.CustomException;
+import com.example.papersheet.handler.CustomException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

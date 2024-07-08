@@ -1,6 +1,8 @@
 package com.example.papersheet.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 
 // @Entity marks this class as a JPA entity
@@ -14,7 +16,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name cannot be blank")
     private String name;
+
+    @Email(message = "Invalid email format")
     private String email;
 
     // Getters and setters

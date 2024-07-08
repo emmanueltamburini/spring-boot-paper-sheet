@@ -131,14 +131,11 @@ This README provides instructions on how to set up and run your Spring Boot appl
     - API Gateway: A server that acts as an API front-end, receiving API requests and routing them.
     - Circuit Breaker: A design pattern to prevent cascading failures in distributed systems.
 
-15. Spring Boot Actuator:
-    - Provides production-ready features to help monitor and manage your application.
-
-16. Spring Boot with databases:
+15. Spring Boot with databases:
     - Configuring and connecting to databases.
     - Managing database transactions.
 
-17. Messaging:
+16. Messaging:
     - Integrating messaging systems like JMS, RabbitMQ, or Kafka for asynchronous communication.
 
 ## Resume
@@ -804,57 +801,7 @@ public class UserController {
 }
 ```
 
-### 15. Spring Boot Actuator
-
-Provides production-ready features to help monitor and manage your application.
-
-Example (application.properties):
-
-```properties
-management.endpoints.web.exposure.include=health,info,metrics,prometheus
-management.endpoint.health.show-details=always
-```
-
-Custom health indicator:
-
-```java
-@Component
-public class CustomHealthIndicator implements HealthIndicator {
-    @Override
-    public Health health() {
-        int errorCode = check();
-        if (errorCode != 0) {
-            return Health.down().withDetail("Error Code", errorCode).build();
-        }
-        return Health.up().build();
-    }
-
-    private int check() {
-        // Perform some health check
-        return 0; // 0 means healthy
-    }
-}
-```
-
-Custom metrics:
-
-```java
-@Service
-public class OrderService {
-    private final MeterRegistry meterRegistry;
-
-    public OrderService(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-    }
-
-    public void processOrder(Order order) {
-        // Process the order
-        meterRegistry.counter("orders.processed").increment();
-    }
-}
-```
-
-### 16. Spring Boot with databases
+### 15. Spring Boot with databases
 
 a) Database configuration:
 Configuring and connecting to databases.
@@ -895,7 +842,7 @@ public class UserService {
 }
 ```
 
-### 17. Messaging with Spring Boot
+### 16. Messaging with Spring Boot
 
 Integrating messaging systems like JMS, RabbitMQ, or Kafka for asynchronous communication.
 

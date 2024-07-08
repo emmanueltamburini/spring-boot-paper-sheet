@@ -1,5 +1,8 @@
 package com.example.papersheet;
 
+import com.example.papersheet.models.User;
+import com.example.papersheet.service.CacheableService;
+import com.example.papersheet.service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -57,6 +60,20 @@ public class PaperSheetApplication {
 		logger.info("Application started successfully");
 		logger.debug("This is a debug message");
 		logger.error("This is an error message");
+
+		// Demonstrate validation
+		UserService userService = context.getBean(UserService.class);
+		try {
+			userService.createUser(new User());
+		} catch (Exception e) {
+			logger.error("Validation error: " + e.getMessage());
+		}
+
+		// Demonstrate caching
+		CacheableService cacheableService = context.getBean(CacheableService.class);
+		logger.info("First call result: " + cacheableService.getCachedData());
+		logger.info("Second call result (should be cached): " + cacheableService.getCachedData());
+
 	}
 
 	// @Bean annotation tells Spring that this method will return an object
