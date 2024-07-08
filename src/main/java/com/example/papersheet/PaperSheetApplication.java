@@ -39,11 +39,6 @@ public class PaperSheetApplication {
 		CustomPropertyDemo demo = context.getBean(CustomPropertyDemo.class);
 		demo.printCustomProperty();
 
-		// Demonstrate Spring Security
-		BCryptPasswordEncoder encoder = context.getBean(BCryptPasswordEncoder.class);
-		String encodedPassword = encoder.encode("password");
-		System.out.println("Encoded password: " + encodedPassword);
-
 		// Demonstrate Spring Boot Actuator
 		HealthIndicator customHealthIndicator = context.getBean("customHealthIndicator", HealthIndicator.class);
 		Health health = customHealthIndicator.health();

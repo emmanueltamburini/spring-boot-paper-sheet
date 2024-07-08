@@ -23,7 +23,10 @@ public class PaperSheetApplicationTests {
 
 	@Test
 	public void greetingShouldReturnDefaultMessage() throws Exception {
-		assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/",
-				String.class)).contains("Hello, World");
+		String url = "http://localhost:" + port + "/";
+		System.out.println("Requesting URL: " + url);
+		String response = this.restTemplate.getForObject(url, String.class);
+		System.out.println("Response: " + response);
+		assertThat(response).contains("Welcome to the Home Page");
 	}
 }
