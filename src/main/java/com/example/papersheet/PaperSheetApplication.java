@@ -4,14 +4,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // @SpringBootApplication combines @Configuration, @EnableAutoConfiguration, and @ComponentScan
 @SpringBootApplication
 public class PaperSheetApplication {
+
+	private static final Logger logger = LoggerFactory.getLogger(PaperSheetApplication.class);
 
 	public static void main(String[] args) {
 		// Bootstrap the application and get the ApplicationContext
@@ -43,6 +48,15 @@ public class PaperSheetApplication {
 		HealthIndicator customHealthIndicator = context.getBean("customHealthIndicator", HealthIndicator.class);
 		Health health = customHealthIndicator.health();
 		System.out.println("Custom Health Indicator Status: " + health.getStatus());
+
+		// Demonstrate profiles
+		ProfileDemo profileDemo = context.getBean(ProfileDemo.class);
+		profileDemo.printProfile();
+
+		// Demonstrate logging
+		logger.info("Application started successfully");
+		logger.debug("This is a debug message");
+		logger.error("This is an error message");
 	}
 
 	// @Bean annotation tells Spring that this method will return an object
@@ -65,7 +79,32 @@ public class PaperSheetApplication {
 	public HealthIndicator customHealthIndicator() {
 		return () -> Health.up().withDetail("custom", "Everything is working fine!").build();
 	}
+
+	// Demonstrate profiles
+	@Bean
+	@Profile("dev")
+	public ProfileDemo devProfileDemo() {
+		return new ProfileDemo("dev");
+	}
+
+	@Bean
+	@Profile("prod")
+	public ProfileDemo prodProfileDemo() {
+		return new ProfileDemo("prod");
+	}
 }
 
 // A simple class to demonstrate prototype scope
 class ExamplePrototypeBean {}
+
+class ProfileDemo {
+	private String profile;
+
+	public ProfileDemo(String profile) {
+		this.profile = profile;
+	}
+
+	public void printProfile() {
+		System.out.println("Active profile: " + profile);
+	}
+}
