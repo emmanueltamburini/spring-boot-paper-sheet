@@ -84,7 +84,7 @@ This README provides instructions on how to set up and run your Spring Boot appl
 
 3. Spring MVC:
    - Controllers: Handle incoming HTTP requests.
-   - RequestMapping: Maps web requests to specific handler methods.
+   - RequestMapping: Maps web requests to specific handler methods./home/emmanuel/Conexia/cuentas-medicas-cuentas-medicas
    - Model, View, and ViewResolver: Components for rendering web pages.
 
 4. RESTful web services:
@@ -1057,3 +1057,532 @@ How they work together:
    ```
 
 In summary, Spring Data JPA provides a higher-level abstraction that simplifies data access patterns, while Hibernate does the heavy lifting of ORM operations. Spring Data JPA generates queries and manages the repository layer, while Hibernate executes these queries and handles the actual database interactions. This combination allows developers to work at a higher level of abstraction with Spring Data JPA, while still having the power and flexibility of Hibernate when needed.
+
+### Spring boot projects resume
+
+1. Spring Framework: The core of the ecosystem, providing dependency injection, transaction management, and more.
+
+2. Spring Boot: Simplifies the setup and development of Spring applications.
+
+3. Spring Data: For simplified data access across various databases.
+
+4. Spring Security: For authentication and authorization in applications.
+
+5. Spring Cloud: For building distributed systems and microservices.
+
+6. Spring MVC: For building web applications and RESTful services.
+
+7. Spring Batch: For high-volume batch processing.
+
+8. Spring Integration: For enterprise integration patterns.
+
+9. Spring WebFlux: For reactive programming in web applications.
+
+10. Spring Test: For unit and integration testing of Spring applications.
+
+11. Spring AMQP: For messaging with Advanced Message Queuing Protocol.
+
+12. Spring for Apache Kafka: For building streaming applications with Kafka.
+
+#### 1. Spring Framework
+
+Principal parts:
+-Core (IoC Container, Events, Resources, i18n, Validation, Data Binding, Type Conversion, SpEL)
+-Testing
+-Data Access
+-Web Servlet
+-Web Reactive
+-Integration
+-Languages
+
+Principal advantage: Provides a comprehensive programming and configuration model for modern Java-based enterprise applications.
+
+Sub-topics:
+-Dependency Injection
+-Aspect-Oriented Programming (AOP)
+-Transaction Management
+
+Code example (Dependency Injection):
+
+```java
+@Component
+public class UserService {
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    // Service methods
+}
+```
+
+#### 2. Spring Boot
+
+Principal parts:
+-Auto-configuration
+-Standalone applications
+-Embedded servers
+-Production-ready features
+
+Principal advantage: Simplifies the process of creating stand-alone, production-grade Spring-based applications.
+
+Sub-topics:
+-Starters
+-Actuator
+-DevTools
+
+Code example (Main application class):
+
+```java
+@SpringBootApplication
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+
+#### 3. Spring Data
+
+Principal parts:
+-Commons
+-JPA
+-MongoDB
+-Redis
+-REST
+
+Principal advantage: Provides a consistent programming model for data access while still retaining the special traits of the underlying data store.
+
+Sub-topics:
+-Repositories
+-Query methods
+-Auditing
+
+Code example (JPA Repository):
+
+```java
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByLastName(String lastName);
+    User findByEmail(String email);
+}
+```
+
+#### 4. Spring Security
+
+Principal parts:
+-Authentication
+-Authorization
+-Protection against attacks
+
+Principal advantage: Provides comprehensive security services for Java EE-based enterprise software applications.
+
+Sub-topics:
+-Web security
+-Method security
+-OAuth 2.0 / OpenID Connect
+
+Code example (Basic security configuration):
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/", "/home").permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+            .logout()
+                .permitAll();
+    }
+}
+```
+
+#### 5. Spring Cloud
+
+Principal parts:
+-Config
+-Service Discovery
+-Circuit Breaker
+-API Gateway
+
+Principal advantage: Provides tools for developers to quickly build some of the common patterns in distributed systems.
+
+Sub-topics:
+-Load balancing
+-Distributed tracing
+-Messaging
+
+Code example (Service Discovery with Eureka):
+
+```java
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class, args);
+    }
+}
+```
+
+Client application:
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceApplication.class, args);
+    }
+}
+```
+
+#### 6. Spring MVC
+
+Principal parts:
+-DispatcherServlet
+-Controllers
+-View Resolvers
+-Interceptors
+
+Principal advantage: Provides a powerful model-view-controller architecture for building flexible and loosely coupled web applications.
+
+Sub-topics:
+-RESTful web services
+-Data binding
+-Validation
+
+Code example (RESTful Controller):
+
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.findById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.create(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+}
+```
+
+#### 7. Spring Batch
+
+Principal parts:
+-JobRepository
+-JobLauncher
+-Job
+-Step
+-ItemReader, ItemProcessor, ItemWriter
+
+Principal advantage: Provides reusable functions that are essential in processing large volumes of records, including logging/tracing, transaction management, job processing statistics, job restart, skip, and resource management.
+
+Sub-topics:
+-Chunk-oriented processing
+-Job flow
+-Scaling and parallel processing
+
+Code example (Simple batch job):
+
+```java
+@Configuration
+@EnableBatchProcessing
+public class BatchConfig {
+    @Autowired
+    public JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    public StepBuilderFactory stepBuilderFactory;
+
+    @Bean
+    public Job importUserJob(Step step1) {
+        return jobBuilderFactory.get("importUserJob")
+                .incrementer(new RunIdIncrementer())
+                .flow(step1)
+                .end()
+                .build();
+    }
+
+    @Bean
+    public Step step1(ItemReader<Person> reader, ItemProcessor<Person, Person> processor, ItemWriter<Person> writer) {
+        return stepBuilderFactory.get("step1")
+                .<Person, Person> chunk(10)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+}
+```
+
+#### 8. Spring Integration
+
+Principal parts:
+-Message
+-Channel
+-Endpoint
+-Gateway
+
+Principal advantage: Provides an extension of the Spring programming model to support the well-known Enterprise Integration Patterns.
+
+Sub-topics:
+-Message routing
+-Transformations
+-Adapters
+
+Code example (Simple integration flow):
+
+```java
+@Configuration
+@EnableIntegration
+public class IntegrationConfig {
+    @Bean
+    public IntegrationFlow fileToJmsFlow() {
+        return IntegrationFlows.from(Files.inboundAdapter(new File("/input")))
+                .filter(payload -> payload.getName().endsWith(".txt"))
+                .transform(Files.toStringTransformer())
+                .handle(Jms.outboundAdapter(connectionFactory).destination("outputQueue"))
+                .get();
+    }
+}
+```
+
+#### 9. Spring WebFlux
+
+Principal parts:
+-Reactive Streams API
+-Reactor Core
+-WebClient
+-Functional endpoints
+
+Principal advantage: Provides a fully non-blocking, reactive alternative to Spring MVC, built on Project Reactor.
+
+Sub-topics:
+-Reactive programming model
+-Functional programming style
+-Server-Sent Events
+
+Code example (Reactive REST controller):
+
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping
+    public Flux<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Mono<User> getUser(@PathVariable String id) {
+        return userRepository.findById(id);
+    }
+
+    @PostMapping
+    public Mono<User> createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+}
+```
+
+#### 10. Spring Test
+
+Principal parts:
+-Unit Testing
+-Integration Testing
+-Mock Objects
+-TestContext Framework
+
+Principal advantage: Provides a comprehensive set of tools and annotations to test Spring applications effectively.
+
+Sub-topics:
+-JUnit support
+-MockMvc for web testing
+-TestRestTemplate for REST client testing
+
+Code example (Integration test with MockMvc):
+
+```java
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    public void testGetUser() throws Exception {
+        mockMvc.perform(get("/api/users/1"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.name").value("John Doe"));
+    }
+
+    @Test
+    public void testCreateUser() throws Exception {
+        mockMvc.perform(post("/api/users")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content("{\"name\":\"Jane Doe\",\"email\":\"jane@example.com\"}"))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.id").exists());
+    }
+}
+```
+
+#### 11. Spring AMQP
+
+Principal parts:
+-RabbitTemplate
+-AmqpTemplate
+-Message Converters
+-Listener Container
+
+Principal advantage: Provides a high-level abstraction for working with AMQP (Advanced Message Queuing Protocol) messaging systems, particularly RabbitMQ.
+
+Sub-topics:
+-Message publishing
+-Message listening
+-Exchange and queue declaration
+-Error handling
+
+Code example (Publishing and receiving messages):
+
+```java
+@Configuration
+public class RabbitConfig {
+
+    @Bean
+    public Queue myQueue() {
+        return new Queue("myQueue", false);
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange("myExchange");
+    }
+
+    @Bean
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("myRoutingKey");
+    }
+}
+
+@Service
+public class MessageService {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendMessage(String message) {
+        rabbitTemplate.convertAndSend("myExchange", "myRoutingKey", message);
+    }
+
+    @RabbitListener(queues = "myQueue")
+    public void receiveMessage(String message) {
+        System.out.println("Received message: " + message);
+    }
+}
+```
+
+#### 12. Spring for Apache Kafka
+
+Principal parts:
+-KafkaTemplate
+-@KafkaListener
+-KafkaAdmin
+-Kafka Streams support
+
+Principal advantage: Provides a high-level abstraction for working with Apache Kafka, simplifying the process of producing and consuming messages.
+
+Sub-topics:
+-Message publishing
+-Consumer groups
+-Kafka Streams processing
+-Transactions
+
+Code example (Kafka producer and consumer):
+
+```java
+@Configuration
+@EnableKafka
+public class KafkaConfig {
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "myGroup");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+}
+
+@Service
+public class KafkaService {
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public void sendMessage(String message) {
+        kafkaTemplate.send("myTopic", message);
+    }
+
+    @KafkaListener(topics = "myTopic", groupId = "myGroup")
+    public void listenGroupFoo(String message) {
+        System.out.println("Received Message in group myGroup: " + message);
+    }
+}
+```
+
+These two components, Spring AMQP and Spring for Apache Kafka, are crucial for building message-driven and event-driven applications. They provide robust integration with two popular messaging systems:
+
+1. Spring AMQP focuses on the Advanced Message Queuing Protocol, primarily used with RabbitMQ. It's excellent for complex routing scenarios and when you need features like message persistence and acknowledgment.
+
+2. Spring for Apache Kafka is tailored for working with Kafka, which is known for its high throughput and is often used for event streaming and log aggregation.
+
+Both of these components follow Spring's philosophy of providing high-level abstractions that simplify development while still allowing for fine-grained control when needed.
+
+These components can be used in conjunction with other Spring modules. For example, you might use Spring Boot as the foundation of your application, Spring AMQP or Kafka for messaging, and Spring Data for persistence.
